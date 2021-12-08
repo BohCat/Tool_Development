@@ -1,0 +1,84 @@
+11.8
+ModifiedItem:
+- 规定Item间交互函数的命名与输入标准:
+---- interact_[function name](self, newItem)
+- 引力交互代码重写，引力计算正式写入PlanetItem
+---- interact_gravety(self, Item)
+---- interact_accept_gravety(self, Item) - 暂定写入PlanetItem
+-删除 addspeed_from_gravety()
+
+SimpleTools:
+- 增加引力计算函数 gravety_tuple()
+
+
+11.9
+UniqueItem:
+- 增加一个UniqueItem.py文件，将继承自GeneralItem的类（这里称为：具体类）定义移入其中
+- 同时将实现具体类的交互功能的补充函数移入其中, 如gravety()与gravety_tuple()
+- 实现了碰撞反弹交互, 可实现与物体/边界的碰撞交互, 交互函数暂定写入PlanetItem
+- 实现了基于二元数组表示的速度向量反射计算
+---- 将向量沿径向反射的计算过程写入reflect_on_radius()
+- 将物体碰撞检测与边界碰撞检测写入is_touch_round_item()与is_touch_bound()
+- 将求解边界碰撞径向向量的计算过程写入get_bound_direction()
+
+ModifiedItem:
+- 实现了GeneralItem的放缩, 功能类似MoveImage类的放缩, 放缩功能写入scale_to()
+
+SimpleTools:
+- 实现了MoveImage类的放缩, 放缩围绕图片几何中心进行, 放缩功能写入scale_to()
+
+11.12
+.py文件更名:
+- ModifiedItem -> Item_General
+- UniqueItem -> Item_Unique
+- SimpleTools -> Tools_Simple
+- ControlFunction -> Control_Keybord
+- gameconfig -> Config_Resource
+新文件命名规则: [主要功能词]_[修饰/区分词].py, 且这两部分首字母大写
+新文件的'主要功能词'尽量使用其它文件已使用的'主要功能词'(非必要不使用新'主要功能词')
+
+.py文件新增:
+- Tools_Image: 将Tools_Simple内的MoveImage移入其中, 包含显示、可视化交互使用的小型数据结构
+- Tools_Item: 将Tools_Simple内的MovePoint, MoveSpeed, MoveAngle移入其中, 包含Item_General.GeneralItem使用的小型数据结构
+- Camera_Basic: 显示功能的实现文件, 将包含程序使用的所有显示调整函数
+
+Tools_Simple:
+- 移除所有数据结构, 仅保留运算函数
+
+11.14
+Tools_Image: 
+- 对于MoveImage的draw()函数进行修改, 增加了支持的输入类型, 使其能进行围绕某个放缩中心与放缩比率的放缩显示
+
+Item_General:
+- 对draw()函数进行了类似MoveImage中的修改
+
+Item_Unique:
+- 对draw()函数进行了类似MoveImage中的修改
+
+Gamera_Basic:
+- 初步完成SubScreen类型的编写, 其功能为创建并管理一个显示界面, 并批量更新/显示记录在其中的GeneralItem与MoveImage类型. SubScreen的各功能介绍暂时写在各自的定义内
+- 初步完成ID_Set类型的编写, 其功能为创建并管理一个代标签的二重字典, 在存入新元素时, 新元素将存入指定key的字典项下, 并与相同key的元素共同构成一个字典 (一个ID_Set内各个元素必需为同种类型)
+- 初步完成WinScreen类型的编写, 其功能为管理记录的界面, 并将其输出到显示窗口(显示屏)上, 当前所有被记录的界面都会被同时显示
+
+11.15
+将除main.py与Config_Resource.py之外的.py文件移入py文件夹下各自的目录中
+
+11.17
+.py文件新增:
+- Camera_IndexScreen: 为了便捷显示菜单界面专门修改了ID_Set(Icon_Set)与SubScreen(IndexScreen), 并增加了一个用于操控的箭头对象
+- Control_Indicator: 针对菜单界面的箭头要求专门修改了InteractImage(Indicator_Image), 该箭头含有记录当前选项与所有选项的缓存变量, 以及基本的箭头移动指令
+
+Tools_Image:
+- 给InteractImage类型增加了基本的指令集结构(存储、赋予、提取), 指令集采用字典存储, 其键值为提取指令所需要的输入, 存储值为可执行代码的字符串格式(即 str: "function(...)" )
+
+增加了一些数据结构的简单注释, 优化了部分代码(不影响输入、输出), 补充了少量数据结构的内置函数
+
+11.18
+设计指令结构以及基本指令框架Toold_Image.Indicator, 将InteractImage的指令功能移入Indicator, 之后所有支持指令传递的结构都将继承自Toold_Image.Indicator
+将Control_Indicator内的所有内容移入其它包, 以优化文件间的调用关系
+增加了一种菜单界面图标的环形显示模式
+
+计划利用pygame.event优化指令传递
+
+11.20
+实现指令回传功能, 实现界面切换功能
