@@ -91,7 +91,7 @@ class ShortMusic(pygame.mixer.Sound):#短提示音只需播放一次
         change_volume(volume = None) - 调整音量
     """
     #初始化对象
-    def __init__(self, name = "start.wav", volume = 10.0):#注意传入的volume值是float类型
+    def __init__(self, name = "boom.wav", volume = 10.0):#注意传入的volume值是float类型
         global Path_Sound
         fullname = os.path.join(Path_Sound, name)#文件的完整路径名
         pygame.mixer.Sound.__init__(self,file = fullname)
